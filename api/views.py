@@ -5,6 +5,14 @@ from base.serializers import ItemsSerializers
 
 @api_view(['GET'])
 def getData(request):
-    item = Items.objects.all();
-    serializer = ItemsSerializers(item, many=True)
+    items = Items.objects.all()
+    serializer = ItemsSerializers(items, many=True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+def addData(request):
+    serializer = ItemsSerializers(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)  
+    return Response(serializer.errors, status=400) 
